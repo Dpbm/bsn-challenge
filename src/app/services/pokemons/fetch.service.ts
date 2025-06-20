@@ -6,19 +6,26 @@ interface Fetcher {
   fetch(input: any): Promise<Pokemon | Pokemon[]>;
 }
 
-type FetcherSingleProvider = (input: string | number) => any;
-type FetcherMultipleProvider = (offset: number, limit: number) => any[];
+type FetcherSingleProvider = (input: string | number) => Promise<any>;
+type FetcherMultipleProvider = (
+  offset: number,
+  limit: number
+) => Promise<any[]>;
 
-function apiParser(data: any): PokemonData {
+export function apiParser(data: any): PokemonData {
   /**
    * @param {any} data - the unparsed incoming response data (from PokeAPI V2)
    * @returns {PokemonData} - the nicely parsed data
    */
 
+  if (!data) {
+    throw new TypeError('Invalid data!');
+  }
+
   return {
-    id: data.id,
-    name: data.name,
-    image: data.sprites.front_default,
+    id: data?.id || 0,
+    name: data?.name || 'none',
+    image: data?.sprites?.front_default || 'none',
   };
 }
 
