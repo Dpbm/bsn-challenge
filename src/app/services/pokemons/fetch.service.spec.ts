@@ -1,4 +1,4 @@
-import { apiParser } from './fetch.service';
+import { apiParserAll, apiParserMinimal } from './fetch.service';
 import { environment } from '@env/environment';
 
 const validPokemon: any = {
@@ -166,13 +166,13 @@ const validPokemon: any = {
   ],
 };
 
-describe('Test Pokemons fetched data parsing', () => {
+describe('Test Pokemons fetched data parsing (full)', () => {
   it('Should fail parse', () => {
-    expect(() => apiParser(null)).toThrowError(TypeError);
+    expect(() => apiParserAll(null)).toThrowError(TypeError);
   });
 
   it('Should return default data', () => {
-    const parsed = apiParser({});
+    const parsed = apiParserAll({});
 
     expect(parsed.id).toEqual(0);
     expect(parsed.name).toEqual('none');
@@ -186,7 +186,7 @@ describe('Test Pokemons fetched data parsing', () => {
   });
 
   it('should return valid parsed data', () => {
-    const parsed = apiParser(validPokemon);
+    const parsed = apiParserAll(validPokemon);
     expect(parsed.id).toEqual(validPokemon.id);
     expect(parsed.name).toEqual(validPokemon.name);
     expect(parsed.image).toEqual(validPokemon.sprites.front_default);
@@ -198,5 +198,26 @@ describe('Test Pokemons fetched data parsing', () => {
     expect(parsed.forms).toEqual([
       { name: 'voltorb', image: `${environment.baseImageUrl}/100.png` },
     ]);
+  });
+});
+
+describe('Test Pokemons fetched data parsing (minimal)', () => {
+  it('Should fail parse', () => {
+    expect(() => apiParserMinimal(null)).toThrowError(TypeError);
+  });
+
+  it('Should return default data', () => {
+    const parsed = apiParserMinimal({});
+
+    expect(parsed.id).toEqual(0);
+    expect(parsed.name).toEqual('none');
+    expect(parsed.image).toEqual('none');
+  });
+
+  it('should return valid parsed data', () => {
+    const parsed = apiParserMinimal(validPokemon);
+    expect(parsed.id).toEqual(validPokemon.id);
+    expect(parsed.name).toEqual(validPokemon.name);
+    expect(parsed.image).toEqual(validPokemon.sprites.front_default);
   });
 });
