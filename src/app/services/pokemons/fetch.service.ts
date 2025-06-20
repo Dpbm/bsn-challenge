@@ -1,19 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PokemonData } from '@customTypes/pokemon';
+import { PokemonData, PokemonMinimalData } from '@customTypes/pokemon';
 import { environment } from '@env/environment';
 import { DEFAULT_POKEMONS_PER_PAGE } from '@utils/constants';
-import { Pokemon } from '@utils/pokemon';
-import { map, Observable } from 'rxjs';
+import { Pokemon, PokemonCard } from '@utils/pokemon';
+import { forkJoin, map, Observable } from 'rxjs';
 
 interface Fetcher {
-  fetch(input: any): Promise<Pokemon | Pokemon[]> | Observable<Pokemon>;
+  fetch(input: string | number): Observable<Pokemon | PokemonCard[]>;
 }
-
-type FetcherMultipleProvider = (
-  offset: number,
-  limit: number
-) => Promise<any[]>;
 
 type FormIncomingData = {
   name: string;
@@ -41,7 +36,7 @@ type MoveIncomingData = {
   };
 };
 
-export function apiParser(data: any): PokemonData {
+export function apiParserAll(data: any): PokemonData {
   /**
    * @param {any} data - the unparsed incoming response data (from PokeAPI V2)
    * @returns {PokemonData} - the nicely parsed data
@@ -96,6 +91,27 @@ export function apiParser(data: any): PokemonData {
   };
 }
 
+export function apiParserMinimal(data: any): PokemonMinimalData {
+  /**
+   * @param {any} data - the unparsed incoming response data (from PokeAPI V2)
+   * @returns {PokemonData} - the nicely parsed data for cards
+   */
+
+  if (!data) {
+    throw new TypeError('Invalid data!');
+  }
+
+  const id = data?.id || 0;
+  const name = data?.name || 'none';
+  const image = data?.sprites?.front_default || 'none';
+
+  return {
+    id,
+    name,
+    image,
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class SinglePokemonFetch implements Fetcher {
   constructor(private http: HttpClient) {}
@@ -103,32 +119,40 @@ export class SinglePokemonFetch implements Fetcher {
   fetch(id: number): Observable<Pokemon> {
     /**
      * @param {number} id - the pokemon's id
-     * @returns {Pokemon} - A pokemon object
+     * @returns {Observable<Pokemon>} - A pokemon object
      */
 
     return this.http
-      .get<any>(`${environment.baseApiUrl}/${id}`)
-      .pipe(map((data: any) => new Pokemon(apiParser(data))));
+      .get(`${environment.baseApiUrl}/${id}`)
+      .pipe(map((data: any) => new Pokemon(apiParserAll(data))));
   }
 }
 
+@Injectable({ providedIn: 'root' })
 export class MultiplePokemonFetch implements Fetcher {
-  private fetcher: FetcherMultipleProvider;
   private limit: number = DEFAULT_POKEMONS_PER_PAGE;
 
-  constructor(fetcher: FetcherMultipleProvider) {
-    this.fetcher = fetcher;
-  }
+  constructor(private http: HttpClient) {}
 
-  async fetch(offset: number): Promise<Pokemon[]> {
+  fetch(offset: number): Observable<PokemonCard[]> {
     /**
      * @param {number} offset - the starting pokemon's id
-     * @returns {Pokemon[]} - A list of pokemons
+     * @returns {Observable<PokemonCard[]>} - A list of pokemons
      */
 
-    const data = await this.fetcher(offset, this.limit);
-    return data.map(
-      (unparsedData: any) => new Pokemon(apiParser(unparsedData))
+    const ids = [...Array(this.limit).keys()].map((i) => i + offset + 1);
+    const requests = ids.map((id: number) =>
+      this.http.get(`${environment.baseApiUrl}/${id}`)
+    );
+
+    const sortPokemons = (a: PokemonCard, b: PokemonCard) => a.id - b.id;
+
+    return forkJoin(requests).pipe(
+      map((results: any[]) =>
+        results
+          .map((result: any) => new PokemonCard(apiParserMinimal(result)))
+          .sort(sortPokemons)
+      )
     );
   }
 }

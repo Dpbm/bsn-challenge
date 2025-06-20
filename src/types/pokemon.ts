@@ -25,3 +25,9 @@ export type PokemonData = {
   abilities: PokemonAbility[];
   forms: PokemonForm[];
 };
+
+export type PokemonMinimalData = {
+  id: PokemonId;
+  name: string;
+  image: PokemonImage;
+};

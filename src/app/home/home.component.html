@@ -1,0 +1,12 @@
+<ion-content>
+  <ion-list>
+    @for (pokemon of pokemons; track pokemon; let index = $index) {
+    <ion-item>
+      <card [pokemon]="pokemon"></card>
+    </ion-item>
+    }
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

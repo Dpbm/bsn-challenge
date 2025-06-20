@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { PokemonComponent } from './pokemon/pokemon.component';
+import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
-  // {
-  //   path: '',
-  //   loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
-  // },
+  {
+    path: '',
+    component: HomeComponent,
+  },
   {
     path: 'pokemon/:id',
     pathMatch: 'prefix',
