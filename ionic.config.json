@@ -1,0 +1,7 @@
+{
+  "name": "bsn-challenge",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
