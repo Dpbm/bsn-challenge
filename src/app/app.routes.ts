@@ -9,7 +9,6 @@ export const routes: Routes = [
   },
   {
     path: 'pokemon/:id',
-    pathMatch: 'prefix',
     component: PokemonComponent,
   },
 ];

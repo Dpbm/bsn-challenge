@@ -10,7 +10,9 @@ import {
   IonInfiniteScrollContent,
   IonItem,
   IonList,
+  IonButton,
 } from '@ionic/angular/standalone';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'home',
@@ -24,6 +26,8 @@ import {
     IonInfiniteScrollContent,
     IonItem,
     IonList,
+    IonButton,
+    RouterModule,
   ],
 })
 export class HomeComponent implements OnInit {
@@ -35,7 +39,6 @@ export class HomeComponent implements OnInit {
   private getPokemons() {
     this.fetcher.fetch(this.currentOffset).subscribe({
       next: (pokemons: PokemonCard[]) => {
-        console.log(pokemons);
         this.pokemons = [...this.pokemons, ...pokemons];
         this.currentOffset += pokemons.length;
       },

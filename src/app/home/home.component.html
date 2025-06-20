@@ -1,9 +1,13 @@
 <ion-content>
   <ion-list>
-    @for (pokemon of pokemons; track pokemon; let index = $index) {
-    <ion-item>
-      <card [pokemon]="pokemon"></card>
-    </ion-item>
+    @for (item of pokemons; track item; let index = $index) {
+    <ion-button [routerLink]="['/pokemon', item.id]">
+
+      <ion-item>
+        <card [pokemon]="item"></card>
+      </ion-item>
+
+    </ion-button>
     }
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
