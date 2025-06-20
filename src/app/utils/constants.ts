@@ -1,0 +1,1 @@
+export const DEFAULT_POKEMONS_PER_PAGE = 20;
