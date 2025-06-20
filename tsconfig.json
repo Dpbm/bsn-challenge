@@ -22,7 +22,8 @@
     "useDefineForClassFields": false,
     "paths": {
       "@customTypes/*": ["src/types/*"],
-      "@utils/*":["src/app/utils/*"]
+      "@utils/*":["src/app/utils/*"],
+      "@env/*":["src/environments/*"]
     }
   },
   "angularCompilerOptions": {

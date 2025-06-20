@@ -1,4 +1,12 @@
-import { PokemonData, PokemonId, PokemonImage } from '@customTypes/pokemon';
+import {
+  PokemonAbility,
+  PokemonData,
+  PokemonForm,
+  PokemonId,
+  PokemonImage,
+  PokemonMove,
+  PokemonType,
+} from '@customTypes/pokemon';
 
 export class Pokemon {
   private data: PokemonData;
@@ -17,5 +25,29 @@ export class Pokemon {
 
   get image(): PokemonImage {
     return this.data.image;
+  }
+
+  get height(): number {
+    return this.data.height;
+  }
+
+  get weight(): number {
+    return this.data.weight;
+  }
+
+  get types(): PokemonType[] {
+    return this.data.types;
+  }
+
+  get moves(): PokemonMove[] {
+    return this.data.moves;
+  }
+
+  get abilities(): PokemonAbility[] {
+    return this.data.abilities;
+  }
+
+  get forms(): PokemonForm[] {
+    return this.data.forms;
   }
 }

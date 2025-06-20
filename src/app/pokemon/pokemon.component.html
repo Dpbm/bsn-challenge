@@ -1,0 +1,52 @@
+<span *ngIf="found; then showPokemon; else notFound"></span>
+
+<ng-template #notFound>
+  <ion-content>
+    <h1>Pokemon not found!</h1>
+  </ion-content>
+</ng-template>
+
+
+<ng-template #showPokemon>
+  <ion-content>
+
+    <h1>{{ pokemon?.name }} <span>#{{ pokemon?.id }}</span></h1>
+    <img [src]="pokemon?.image" />
+
+    <p>height: {{pokemon?.height}} cm</p>
+    <p>weight: {{pokemon?.weight}} kg</p>
+
+
+    <h3>Types</h3>
+    <div>
+      <p *ngFor="let type of pokemon?.types">
+        {{ type }}
+      </p>
+    </div>
+
+    <h3>Moves</h3>
+    <div>
+      <p *ngFor="let move of pokemon?.moves">
+        {{ move }}
+      </p>
+    </div>
+
+    <h3>Abilities</h3>
+    <div>
+      <p *ngFor="let ability of pokemon?.abilities">
+        {{ ability }}
+      </p>
+    </div>
+
+
+    <h3>Forms</h3>
+    <div>
+      <div *ngFor="let form of pokemon?.forms">
+        <p>{{form.name}}</p>
+        <img [src]="form.image" />
+      </div>
+
+    </div>
+
+  </ion-content>
+</ng-template>

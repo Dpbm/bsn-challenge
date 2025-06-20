@@ -1,16 +1,24 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { PokemonData } from '@customTypes/pokemon';
+import { environment } from '@env/environment';
 import { DEFAULT_POKEMONS_PER_PAGE } from '@utils/constants';
 import { Pokemon } from '@utils/pokemon';
+import { map, Observable } from 'rxjs';
 
 interface Fetcher {
-  fetch(input: any): Promise<Pokemon | Pokemon[]>;
+  fetch(input: any): Promise<Pokemon | Pokemon[]> | Observable<Pokemon>;
 }
 
-type FetcherSingleProvider = (input: string | number) => Promise<any>;
 type FetcherMultipleProvider = (
   offset: number,
   limit: number
 ) => Promise<any[]>;
+
+type FormIncomingData = {
+  name: string;
+  image: string;
+};
 
 export function apiParser(data: any): PokemonData {
   /**
@@ -22,29 +30,45 @@ export function apiParser(data: any): PokemonData {
     throw new TypeError('Invalid data!');
   }
 
+  const pokemonId = data?.id || 0;
+  const pokemonName = data?.name || 'none';
+
   return {
-    id: data?.id || 0,
-    name: data?.name || 'none',
+    id: pokemonId,
+    name: pokemonName,
+    height: (data?.height || 0) * 10, // decimeters to centimeters
+    weight: (data?.weight || 0) / 10, // hectograms to kilograms
     image: data?.sprites?.front_default || 'none',
+    types: data?.types?.map((type: any) => type.type.name) || [],
+    moves: data?.moves?.map(({ move }: any) => move.name) || [],
+    abilities: data?.abilities?.map(({ ability }: any) => ability.name) || [],
+    forms: data?.forms?.map((form: FormIncomingData) => {
+      const formName = form.name.replace(`${pokemonName}-`, '');
+      const imageFile = ['normal', pokemonName].includes(formName)
+        ? `${pokemonId}.png`
+        : `${pokemonId}-${formName}.png`;
+
+      return {
+        name: formName,
+        image: `${environment.baseImageUrl}/${imageFile}`,
+      };
+    }),
   };
 }
 
+@Injectable({ providedIn: 'root' })
 export class SinglePokemonFetch implements Fetcher {
-  private fetcher: FetcherSingleProvider;
+  constructor(private http: HttpClient) {}
 
-  constructor(fetcher: FetcherSingleProvider) {
-    this.fetcher = fetcher;
-  }
-
-  async fetch(name: string): Promise<Pokemon> {
+  fetch(id: number): Observable<Pokemon> {
     /**
-     * @param {string} name - the pokemon's name
+     * @param {number} id - the pokemon's id
      * @returns {Pokemon} - A pokemon object
      */
 
-    const data = await this.fetcher(name);
-    const parsedData = apiParser(data);
-    return new Pokemon(parsedData);
+    return this.http
+      .get<any>(`${environment.baseApiUrl}/${id}`)
+      .pipe(map((data: any) => new Pokemon(apiParser(data))));
   }
 }
 

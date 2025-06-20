@@ -66,6 +66,7 @@
   "description": "A PokeAPI client",
   "_moduleAliases": {
     "@customTypes": "./src/types",
-    "@utils": "./src/app/utils"
+    "@utils": "./src/app/utils",
+    "@env": "src/environments/"
   }
 }
