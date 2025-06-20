@@ -20,6 +20,27 @@ type FormIncomingData = {
   image: string;
 };
 
+type TypeIncomingData = {
+  type: {
+    name: string;
+    url: string;
+  };
+};
+
+type AbilityIncomingData = {
+  ability: {
+    name: string;
+    url: string;
+  };
+};
+
+type MoveIncomingData = {
+  move: {
+    name: string;
+    url: string;
+  };
+};
+
 export function apiParser(data: any): PokemonData {
   /**
    * @param {any} data - the unparsed incoming response data (from PokeAPI V2)
@@ -30,29 +51,48 @@ export function apiParser(data: any): PokemonData {
     throw new TypeError('Invalid data!');
   }
 
-  const pokemonId = data?.id || 0;
-  const pokemonName = data?.name || 'none';
+  const id = data?.id || 0;
+  const name = data?.name || 'none';
+
+  const height = (data?.height || 0) * 10; // decimeters to centimeters
+  const weight = (data?.weight || 0) / 10; // hectograms to kilograms
+
+  const image = data?.sprites?.front_default || 'none';
+
+  const types = !data?.types
+    ? []
+    : data.types.map(({ type }: TypeIncomingData) => type.name);
+  const moves = !data?.moves
+    ? []
+    : data.moves.map(({ move }: MoveIncomingData) => move.name);
+  const abilities = !data?.abilities
+    ? []
+    : data.abilities.map(({ ability }: AbilityIncomingData) => ability.name);
+
+  const parseForm = (form: FormIncomingData) => {
+    const formName = form.name.replace(`${name}-`, '');
+    const imageFile = ['normal', name].includes(formName)
+      ? `${id}.png`
+      : `${id}-${formName}.png`;
+
+    return {
+      name: formName,
+      image: `${environment.baseImageUrl}/${imageFile}`,
+    };
+  };
+
+  const forms = !data?.forms ? [] : data.forms.map(parseForm);
 
   return {
-    id: pokemonId,
-    name: pokemonName,
-    height: (data?.height || 0) * 10, // decimeters to centimeters
-    weight: (data?.weight || 0) / 10, // hectograms to kilograms
-    image: data?.sprites?.front_default || 'none',
-    types: data?.types?.map((type: any) => type.type.name) || [],
-    moves: data?.moves?.map(({ move }: any) => move.name) || [],
-    abilities: data?.abilities?.map(({ ability }: any) => ability.name) || [],
-    forms: data?.forms?.map((form: FormIncomingData) => {
-      const formName = form.name.replace(`${pokemonName}-`, '');
-      const imageFile = ['normal', pokemonName].includes(formName)
-        ? `${pokemonId}.png`
-        : `${pokemonId}-${formName}.png`;
-
-      return {
-        name: formName,
-        image: `${environment.baseImageUrl}/${imageFile}`,
-      };
-    }),
+    id,
+    name,
+    height,
+    weight,
+    image,
+    types,
+    moves,
+    abilities,
+    forms,
   };
 }
 

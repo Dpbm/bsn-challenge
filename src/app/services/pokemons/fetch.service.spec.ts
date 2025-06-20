@@ -1,9 +1,5 @@
-import { Pokemon } from '@utils/pokemon';
-import {
-  apiParser,
-  MultiplePokemonFetch,
-  SinglePokemonFetch,
-} from './fetch.service';
+import { apiParser } from './fetch.service';
+import { environment } from '@env/environment';
 
 const validPokemon: any = {
   abilities: [
@@ -24,10 +20,16 @@ const validPokemon: any = {
       slot: 3,
     },
   ],
+  forms: [
+    {
+      name: 'voltorb',
+      url: 'https://pokeapi.co/api/v2/pokemon-form/100/',
+    },
+  ],
   base_experience: 101,
-  id: 132,
+  id: 100,
   is_default: true,
-  name: 'ditto',
+  name: 'voltorb',
   order: 214,
   sprites: {
     back_default:
@@ -103,16 +105,66 @@ const validPokemon: any = {
     },
   ],
   weight: 40,
+  height: 100,
+  moves: [
+    {
+      move: {
+        name: 'headbutt',
+        url: 'https://pokeapi.co/api/v2/move/29/',
+      },
+      version_group_details: [
+        {
+          level_learned_at: 0,
+          move_learn_method: {
+            name: 'machine',
+            url: 'https://pokeapi.co/api/v2/move-learn-method/4/',
+          },
+          order: null,
+          version_group: {
+            name: 'gold-silver',
+            url: 'https://pokeapi.co/api/v2/version-group/3/',
+          },
+        },
+        {
+          level_learned_at: 0,
+          move_learn_method: {
+            name: 'machine',
+            url: 'https://pokeapi.co/api/v2/move-learn-method/4/',
+          },
+          order: null,
+          version_group: {
+            name: 'crystal',
+            url: 'https://pokeapi.co/api/v2/version-group/4/',
+          },
+        },
+        {
+          level_learned_at: 0,
+          move_learn_method: {
+            name: 'tutor',
+            url: 'https://pokeapi.co/api/v2/move-learn-method/3/',
+          },
+          order: null,
+          version_group: {
+            name: 'heartgold-soulsilver',
+            url: 'https://pokeapi.co/api/v2/version-group/10/',
+          },
+        },
+        {
+          level_learned_at: 0,
+          move_learn_method: {
+            name: 'machine',
+            url: 'https://pokeapi.co/api/v2/move-learn-method/4/',
+          },
+          order: null,
+          version_group: {
+            name: 'lets-go-pikachu-lets-go-eevee',
+            url: 'https://pokeapi.co/api/v2/version-group/19/',
+          },
+        },
+      ],
+    },
+  ],
 };
-
-const fakeSinglePokemonFetcher = (input: string | number): Promise<any> =>
-  new Promise((resolve, _) => resolve(validPokemon));
-
-const fakeMultiplePokemonFetcher = (
-  offset: number,
-  limit: number
-): Promise<any[]> =>
-  new Promise((resolve, _) => resolve(new Array(10).fill(validPokemon)));
 
 describe('Test Pokemons fetched data parsing', () => {
   it('Should fail parse', () => {
@@ -122,44 +174,29 @@ describe('Test Pokemons fetched data parsing', () => {
   it('Should return default data', () => {
     const parsed = apiParser({});
 
-    expect(parsed.id).toBe(0);
-    expect(parsed.name).toBe('none');
-    expect(parsed.image).toBe('none');
+    expect(parsed.id).toEqual(0);
+    expect(parsed.name).toEqual('none');
+    expect(parsed.image).toEqual('none');
+    expect(parsed.weight).toEqual(0);
+    expect(parsed.height).toEqual(0);
+    expect(parsed.types).toEqual([]);
+    expect(parsed.moves).toEqual([]);
+    expect(parsed.abilities).toEqual([]);
+    expect(parsed.forms).toEqual([]);
   });
 
   it('should return valid parsed data', () => {
     const parsed = apiParser(validPokemon);
-    expect(parsed.id).toBe(validPokemon.id);
-    expect(parsed.name).toBe(validPokemon.name);
-    expect(parsed.image).toBe(validPokemon.sprites.front_default);
-  });
-});
-
-describe('Test single pokemon fetching', () => {
-  it('should return a valid pokemon object', async () => {
-    const pokemonFetcher = new SinglePokemonFetch(fakeSinglePokemonFetcher);
-    const pokemon = await pokemonFetcher.fetch('none');
-
-    expect(pokemon.id).toBe(validPokemon.id);
-    expect(pokemon.name).toBe(validPokemon.name);
-    expect(pokemon.image).toBe(validPokemon.sprites.front_default);
-  });
-});
-
-describe('Test multiple pokemons fetching', () => {
-  it('should return a valid pokemon list', async () => {
-    const pokemonFetcher = new MultiplePokemonFetch(fakeMultiplePokemonFetcher);
-    const pokemons = await pokemonFetcher.fetch(10);
-
-    // once the pokeAPI is in charge of returning the total the correct amount of elements
-    // we aren't going to test that
-
-    expect(pokemons.length).toBe(10);
-
-    pokemons.forEach((pokemon: Pokemon) => {
-      expect(pokemon.id).toBe(validPokemon.id);
-      expect(pokemon.name).toBe(validPokemon.name);
-      expect(pokemon.image).toBe(validPokemon.sprites.front_default);
-    });
+    expect(parsed.id).toEqual(validPokemon.id);
+    expect(parsed.name).toEqual(validPokemon.name);
+    expect(parsed.image).toEqual(validPokemon.sprites.front_default);
+    expect(parsed.weight).toEqual(validPokemon.weight / 10);
+    expect(parsed.height).toEqual(validPokemon.height * 10);
+    expect(parsed.types).toEqual(['normal']);
+    expect(parsed.moves).toEqual(['headbutt']);
+    expect(parsed.abilities).toEqual(['limber', 'imposter']);
+    expect(parsed.forms).toEqual([
+      { name: 'voltorb', image: `${environment.baseImageUrl}/100.png` },
+    ]);
   });
 });
