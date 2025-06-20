@@ -11,7 +11,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
-    "build:ci": "ng build --prod"
+    "build:ci": "ng build --configuration=production"
   },
   "private": true,
   "dependencies": {
