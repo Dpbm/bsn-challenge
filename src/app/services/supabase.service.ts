@@ -4,12 +4,14 @@ import {
   AuthError,
   AuthSession,
   createClient,
+  PostgrestError,
   Session,
   SupabaseClient,
   User,
 } from '@supabase/supabase-js';
 import { environment } from '@env/environment';
 import { BehaviorSubject } from 'rxjs';
+import { PokemonId } from '@customTypes/pokemon';
 export interface Profile {
   id?: string;
   username: string;
@@ -72,6 +74,22 @@ export class SupabaseService {
       this.isLogged.next(false);
     }
 
+    return error;
+  }
+
+  async addFavoritePokemon(id: PokemonId): Promise<PostgrestError | null> {
+    const { error } = await this.supabase
+      .from('favorites')
+      .insert({ user_id: this.session?.user.id, pokemon_id: id });
+
+    return error;
+  }
+
+  async removeFavoritePokemon(id: PokemonId): Promise<PostgrestError | null> {
+    const { error } = await this.supabase
+      .from('favorites')
+      .delete()
+      .match({ user_id: this.session?.user.id, pokemon_id: id });
     return error;
   }
 }

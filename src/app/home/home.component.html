@@ -13,13 +13,13 @@
 <ion-content>
   <ion-list>
     @for (item of pokemons; track item; let index = $index) {
-    <ion-button [routerLink]="['/pokemon', item.id]">
+    <!-- <ion-button [routerLink]="['/pokemon', item.id]"> -->
 
-      <ion-item>
-        <card [pokemon]="item"></card>
-      </ion-item>
+    <ion-item>
+      <card [pokemon]="item" [isFavorite]="false"></card>
+    </ion-item>
 
-    </ion-button>
+    <!-- </ion-button> -->
     }
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">

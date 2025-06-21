@@ -1,0 +1,6 @@
+<div>
+    <ion-img [src]="pokemon?.image" />
+    {{pokemon.name}}
+    <ion-icon name="heart-outline" size="large" (click)="favorite(pokemon.id)"
+        [style.color]="isFavorite ? 'red' : 'gray'"></ion-icon>
+</div>

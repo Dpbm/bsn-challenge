@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { MultiplePokemonFetch } from '../services/pokemons/fetch.service';
 import { PokemonCard } from '@utils/pokemon';
 import { CommonModule } from '@angular/common';
-import { CardComponent } from './cards/card.component';
+import { CardComponent } from '../cards/card.component';
 import {
   InfiniteScrollCustomEvent,
   IonContent,
