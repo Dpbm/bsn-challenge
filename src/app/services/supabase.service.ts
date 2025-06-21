@@ -9,6 +9,7 @@ import {
   User,
 } from '@supabase/supabase-js';
 import { environment } from '@env/environment';
+import { BehaviorSubject } from 'rxjs';
 export interface Profile {
   id?: string;
   username: string;
@@ -21,12 +22,17 @@ export interface Profile {
 export class SupabaseService {
   private supabase: SupabaseClient;
   _session: AuthSession | null = null;
+  isLogged: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor() {
     this.supabase = createClient(
       environment.supabaseUrl,
       environment.supabaseKey
     );
+
+    this.authChanges((_, session) => {
+      this.isLogged.next(!!session);
+    });
   }
 
   get session() {
