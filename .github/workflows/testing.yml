@@ -18,6 +18,9 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Generate Config
+        run: npm run env:conf
+
       - name: Build production version
         run: npm run build:ci
 

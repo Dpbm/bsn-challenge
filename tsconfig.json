@@ -24,7 +24,7 @@
       "@customTypes/*": ["src/types/*"],
       "@utils/*":["src/app/utils/*"],
       "@env/*":["src/environments/*"]
-    }
+    },
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
