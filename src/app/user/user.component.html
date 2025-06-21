@@ -1,3 +1,12 @@
-<p>
-  user works!
-</p>
+<ion-header>
+  <ion-text>{{email}}</ion-text>
+  <ion-button (click)="logout()">Logout</ion-button>
+</ion-header>
+<ion-content>
+
+</ion-content>
+
+
+
+<ion-toast [isOpen]="failedLogoutToastIsOpen" message="Failed on Logout. Please Try again later!" [duration]="1000"
+  (didDismiss)="closeToast()" color="danger"></ion-toast>

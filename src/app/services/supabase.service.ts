@@ -65,7 +65,13 @@ export class SupabaseService {
     return this.supabase.auth.signInWithOtp({ email });
   }
 
-  signOut() {
-    return this.supabase.auth.signOut();
+  async signOut(): Promise<AuthError | null> {
+    const { error } = await this.supabase.auth.signOut();
+
+    if (!error) {
+      this.isLogged.next(false);
+    }
+
+    return error;
   }
 }
