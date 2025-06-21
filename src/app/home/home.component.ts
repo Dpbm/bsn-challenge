@@ -11,8 +11,11 @@ import {
   IonItem,
   IonList,
   IonButton,
+  IonHeader,
+  IonAvatar,
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
+import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'home',
@@ -27,14 +30,20 @@ import { RouterModule } from '@angular/router';
     IonItem,
     IonList,
     IonButton,
+    IonHeader,
+    IonAvatar,
     RouterModule,
   ],
 })
 export class HomeComponent implements OnInit {
   private currentOffset: number = 0;
   pokemons: PokemonCard[] = [];
+  isLogged: boolean = !!this.supabase.session;
 
-  constructor(private fetcher: MultiplePokemonFetch) {}
+  constructor(
+    private fetcher: MultiplePokemonFetch,
+    private readonly supabase: SupabaseService
+  ) {}
 
   private getPokemons() {
     this.fetcher.fetch(this.currentOffset).subscribe({
@@ -46,6 +55,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.supabase.authChanges((_, session) => (this.isLogged = !!session));
     this.getPokemons();
   }
 

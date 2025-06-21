@@ -1,3 +1,15 @@
+<ion-header>
+  <span *ngIf="isLogged; then user; else login"></span>
+  <ng-template #login>
+    <ion-button [routerLink]="['/login']">login</ion-button>
+  </ng-template>
+  <ng-template #user>
+    <ion-avatar [routerLink]="['/user']">
+      <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+    </ion-avatar>
+  </ng-template>
+</ion-header>
+
 <ion-content>
   <ion-list>
     @for (item of pokemons; track item; let index = $index) {
