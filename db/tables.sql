@@ -3,5 +3,6 @@ create table favorites (
     pokemon_id bigint NOT NULL,
     user_id uuid NOT NULL,
     inserted_at timestamp with time zone default timezone('utc'::text, now()) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES auth.users(id) ON delete cascade
+    FOREIGN KEY (user_id) REFERENCES auth.users(id) ON delete cascade,
+    unique (user_id, pokemon_id)
 );
