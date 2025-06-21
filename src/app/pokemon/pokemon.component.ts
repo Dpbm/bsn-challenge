@@ -4,6 +4,7 @@ import { SinglePokemonFetch } from '../services/pokemons/fetch.service';
 import { Pokemon } from '@utils/pokemon';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'pokemon',
