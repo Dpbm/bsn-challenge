@@ -3,7 +3,13 @@
   <ion-button (click)="logout()">Logout</ion-button>
 </ion-header>
 <ion-content>
-
+  <ion-list>
+    @for (item of pokemons; track item; let index = $index) {
+    <ion-item>
+      <card [pokemon]="item" [isFavorite]="true" (favoriteEvent)="favoriteHandler($event)"></card>
+    </ion-item>
+    }
+  </ion-list>
 </ion-content>
 
 

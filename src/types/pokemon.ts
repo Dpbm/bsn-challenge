@@ -32,4 +32,5 @@ export type PokemonMinimalData = {
   image: PokemonImage;
 };
 
-export type FavoriteData = { pokemon_id: PokemonId };
+export type FavoriteData = { pokemon_id: PokemonId }; // from database
+export type FavoriteEventData = { pokemonId: PokemonId; wasFavorite: boolean };

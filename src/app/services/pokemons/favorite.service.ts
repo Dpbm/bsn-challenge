@@ -4,7 +4,7 @@ import { PokemonId } from '@customTypes/pokemon';
 import { SupabaseService } from 'src/app/services/supabase.service';
 
 @Injectable({ providedIn: 'root' })
-export class FavoriteCallback {
+export class Favorite {
   constructor(
     private readonly supabase: SupabaseService,
     private router: Router

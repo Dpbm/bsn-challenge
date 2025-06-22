@@ -16,7 +16,7 @@
     <!-- <ion-button [routerLink]="['/pokemon', item.id]"> -->
 
     <ion-item>
-      <card [pokemon]="item" [isFavorite]="isFavorite(item.id)"></card>
+      <card [pokemon]="item" [isFavorite]="isFavorite(item.id)" (favoriteEvent)="favoriteHandler($event)"></card>
     </ion-item>
 
     <!-- </ion-button> -->

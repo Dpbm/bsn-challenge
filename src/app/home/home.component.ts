@@ -16,7 +16,8 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
-import { PokemonId } from '@customTypes/pokemon';
+import { FavoriteEventData, PokemonId } from '@customTypes/pokemon';
+import { Favorite } from '../services/pokemons/favorite.service';
 
 @Component({
   selector: 'home',
@@ -44,6 +45,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private fetcher: MultiplePokemonFetch,
+    private favoriteCallback: Favorite,
     private readonly supabase: SupabaseService
   ) {}
 
@@ -72,6 +74,21 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 500); // debounce
+  }
+
+  async favoriteHandler(event: FavoriteEventData) {
+    const success = await this.favoriteCallback.call(
+      event.pokemonId,
+      event.wasFavorite
+    );
+
+    if (!success) return;
+
+    if (event.wasFavorite) {
+      this.favorites.delete(event.pokemonId);
+    } else {
+      this.favorites.add(event.pokemonId);
+    }
   }
 
   isFavorite(id: PokemonId): boolean {

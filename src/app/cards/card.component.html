@@ -1,6 +1,6 @@
 <div>
     <ion-button [routerLink]="['/pokemon', pokemon.id]"><ion-img [src]="pokemon?.image" /> </ion-button>
     {{pokemon.name}}
-    <ion-icon name="heart-outline" size="large" (click)="favorite(pokemon.id)"
+    <ion-icon name="heart-outline" size="large" (click)="favorite()"
         [style.color]="isFavorite ? 'red' : 'gray'"></ion-icon>
 </div>
