@@ -1,25 +1,28 @@
 <ion-header>
   <span *ngIf="isLogged; then user; else login"></span>
+
   <ng-template #login>
-    <ion-button [routerLink]="['/login']">login</ion-button>
+    <ion-nav-link router-direction="forward" [component]="loginComponent">
+      <ion-button>login</ion-button>
+    </ion-nav-link>
   </ng-template>
+
   <ng-template #user>
     <ion-avatar [routerLink]="['/user']">
       <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
     </ion-avatar>
   </ng-template>
+
 </ion-header>
 
 <ion-content>
   <ion-list>
     @for (item of pokemons; track item; let index = $index) {
-    <!-- <ion-button [routerLink]="['/pokemon', item.id]"> -->
 
     <ion-item>
       <card [pokemon]="item" [isFavorite]="isFavorite(item.id)" (favoriteEvent)="favoriteHandler($event)"></card>
     </ion-item>
 
-    <!-- </ion-button> -->
     }
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">

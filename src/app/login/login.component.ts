@@ -6,8 +6,11 @@ import {
   IonToast,
   IonContent,
   IonText,
+  IonHeader,
+  IonButtons,
+  IonBackButton,
+  IonToolbar,
 } from '@ionic/angular/standalone';
-import { BackComponent } from '../back/back.component';
 import * as z from 'zod/v4-mini';
 
 const checkEmail = (email: string) =>
@@ -21,7 +24,17 @@ const checkEmail = (email: string) =>
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [IonInput, IonButton, IonToast, IonContent, BackComponent, IonText],
+  imports: [
+    IonInput,
+    IonButton,
+    IonToast,
+    IonContent,
+    IonText,
+    IonHeader,
+    IonButtons,
+    IonBackButton,
+    IonToolbar,
+  ],
 })
 export class LoginComponent {
   email: string = '';

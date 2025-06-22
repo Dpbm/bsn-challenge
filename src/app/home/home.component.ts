@@ -13,11 +13,13 @@ import {
   IonButton,
   IonHeader,
   IonAvatar,
+  IonNavLink,
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { FavoriteEventData, PokemonId } from '@customTypes/pokemon';
 import { Favorite } from '../services/pokemons/favorite.service';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'home',
@@ -35,6 +37,7 @@ import { Favorite } from '../services/pokemons/favorite.service';
     IonHeader,
     IonAvatar,
     RouterModule,
+    IonNavLink,
   ],
 })
 export class HomeComponent implements OnInit {
@@ -42,6 +45,8 @@ export class HomeComponent implements OnInit {
   pokemons: PokemonCard[] = [];
   favorites: Set<PokemonId> = new Set();
   isLogged: boolean = !!this.supabase.session;
+
+  loginComponent = LoginComponent;
 
   constructor(
     private fetcher: MultiplePokemonFetch,
