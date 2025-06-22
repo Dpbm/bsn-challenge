@@ -7,7 +7,6 @@ import {
 } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class isLoggedGuard implements CanActivate {
@@ -16,25 +15,24 @@ export class isLoggedGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(
+  async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<GuardResult> {
+  ): Promise<GuardResult> {
     /**
      * Checks supabase session. If it exists, the user is logged
      * so, he can continue his navigation.
      *
-     * @returns {Observable<bool>}
+     * @returns {Promise<bool>}
      */
 
-    return this.supabase.isLogged.pipe(
-      map((value: boolean) => {
-        if (!value) {
-          this.router.navigate(['/login']);
-        }
+    return this.supabase.isLogged().then((logged: boolean) => {
+      if (logged) {
+        return true;
+      }
 
-        return value;
-      })
-    );
+      this.router.navigate(['/login']);
+      return false;
+    });
   }
 }

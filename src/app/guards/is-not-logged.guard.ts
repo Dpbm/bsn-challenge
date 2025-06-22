@@ -2,13 +2,11 @@ import {
   ActivatedRouteSnapshot,
   CanActivate,
   GuardResult,
-  MaybeAsync,
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class isNotLoggedGuard implements CanActivate {
@@ -17,10 +15,10 @@ export class isNotLoggedGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(
+  async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): MaybeAsync<GuardResult> {
+  ): Promise<GuardResult> {
     /**
      * Checks supabase session. If it exists, the user is logged
      * so, he must not access some areas (like login page).
@@ -28,14 +26,13 @@ export class isNotLoggedGuard implements CanActivate {
      * @returns {Observable<bool>}
      */
 
-    return this.supabase.isLogged.pipe(
-      map((value: boolean) => {
-        if (value) {
-          this.router.navigate(['/']);
-        }
+    return this.supabase.isLogged().then((logged: boolean) => {
+      if (!logged) {
+        return true;
+      }
 
-        return !value;
-      })
-    );
+      this.router.navigate(['/']);
+      return false;
+    });
   }
 }

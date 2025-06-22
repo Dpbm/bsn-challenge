@@ -16,6 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
+import { FavoriteData, PokemonId } from '@customTypes/pokemon';
 
 @Component({
   selector: 'home',
@@ -38,12 +39,15 @@ import { SupabaseService } from '../services/supabase.service';
 export class HomeComponent implements OnInit {
   private currentOffset: number = 0;
   pokemons: PokemonCard[] = [];
+  favorites: Set<PokemonId> = new Set();
   isLogged: boolean = !!this.supabase.session;
 
   constructor(
     private fetcher: MultiplePokemonFetch,
     private readonly supabase: SupabaseService
-  ) {}
+  ) {
+    this.supabase.authChanges((_, session) => (this.isLogged = !!session));
+  }
 
   private getPokemons() {
     this.fetcher.fetch(this.currentOffset).subscribe({
@@ -54,9 +58,16 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.supabase.authChanges((_, session) => (this.isLogged = !!session));
-    this.getPokemons();
+  private async getFavorites() {
+    const data = await this.supabase.getFavoritePokemons();
+    this.favorites = new Set(
+      data.map((favorite: FavoriteData) => favorite.pokemon_id)
+    );
+  }
+
+  async ngOnInit() {
+    await this.getFavorites();
+    await this.getPokemons();
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
@@ -64,5 +75,9 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 500); // debounce
+  }
+
+  isFavorite(id: PokemonId): boolean {
+    return this.favorites.has(id);
   }
 }

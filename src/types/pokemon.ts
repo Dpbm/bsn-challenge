@@ -31,3 +31,5 @@ export type PokemonMinimalData = {
   name: string;
   image: PokemonImage;
 };
+
+export type FavoriteData = { pokemon_id: PokemonId };
