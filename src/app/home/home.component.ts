@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
   }
 
   private async getFavorites() {
-    const data = await this.supabase.getFavoritePokemons();
+    const data = await this.supabase.getFavoritePokemons(this.currentOffset);
     this.favorites = new Set(data);
   }
 

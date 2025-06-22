@@ -11,6 +11,7 @@ import {
 } from '@supabase/supabase-js';
 import { environment } from '@env/environment';
 import { FavoriteData, PokemonId } from '@customTypes/pokemon';
+import { DEFAULT_POKEMONS_PER_PAGE } from '@utils/constants';
 
 const noUserError = () =>
   new PostgrestError({ message: 'No User!', code: '', details: '', hint: '' });
@@ -105,13 +106,15 @@ export class SupabaseService {
     });
   }
 
-  async getFavoritePokemons(): Promise<PokemonId[]> {
+  async getFavoritePokemons(offset: number): Promise<PokemonId[]> {
     return this.userId().then(async (userId: string | null) => {
       if (!userId) return [];
 
       const { data } = await this.supabase
         .from('favorites')
         .select('pokemon_id')
+        .order('pokemon_id', { ascending: true })
+        .range(offset, offset + DEFAULT_POKEMONS_PER_PAGE)
         .match({ user_id: userId });
 
       return !data

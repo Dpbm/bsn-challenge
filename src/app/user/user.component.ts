@@ -8,6 +8,9 @@ import {
   IonToast,
   IonList,
   IonItem,
+  InfiniteScrollCustomEvent,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { PokemonCard } from '@utils/pokemon';
@@ -29,9 +32,12 @@ import { Favorite } from '../services/pokemons/favorite.service';
     IonList,
     IonItem,
     CardComponent,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
   ],
 })
 export class UserComponent implements OnInit {
+  private currentOffset: number = 0;
   email: string = '';
   failedLogoutToastIsOpen: boolean = false;
   pokemons: PokemonCard[] = [];
@@ -45,12 +51,20 @@ export class UserComponent implements OnInit {
 
   async ngOnInit() {
     this.email = (await this.supabase.email()) || '';
+    await this.getPokemons();
+  }
 
-    this.supabase.getFavoritePokemons().then((ids: PokemonId[]) => {
-      this.fetcher.fetch(ids).subscribe({
-        next: (pokemons: PokemonCard[]) => (this.pokemons = pokemons),
+  async getPokemons() {
+    this.supabase
+      .getFavoritePokemons(this.currentOffset)
+      .then((ids: PokemonId[]) => {
+        this.fetcher.fetch(ids).subscribe({
+          next: (pokemons: PokemonCard[]) =>
+            (this.pokemons = [...this.pokemons, ...pokemons]),
+        });
+
+        this.currentOffset += ids.length;
       });
-    });
   }
 
   async logout() {
@@ -78,5 +92,12 @@ export class UserComponent implements OnInit {
 
   closeToast() {
     this.failedLogoutToastIsOpen = false;
+  }
+
+  onIonInfinite(event: InfiniteScrollCustomEvent) {
+    this.getPokemons();
+    setTimeout(() => {
+      event.target.complete();
+    }, 500); // debounce
   }
 }
