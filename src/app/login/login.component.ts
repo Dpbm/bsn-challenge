@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SupabaseService } from '../services/supabase.service';
-import { IonInput, IonButton, IonToast } from '@ionic/angular/standalone';
-import * as z from 'zod/v4';
+import {
+  IonInput,
+  IonButton,
+  IonToast,
+  IonContent,
+  IonText,
+} from '@ionic/angular/standalone';
+import { BackComponent } from '../back/back.component';
+import * as z from 'zod/v4-mini';
 
 const checkEmail = (email: string) =>
   z
@@ -14,17 +21,15 @@ const checkEmail = (email: string) =>
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [IonInput, IonButton, IonToast],
+  imports: [IonInput, IonButton, IonToast, IonContent, BackComponent, IonText],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   email: string = '';
   disabled: boolean = true;
   errorLoginToastIsOpen: boolean = false;
   successLoginToastIsOpen: boolean = false;
 
   constructor(private supabase: SupabaseService) {}
-
-  ngOnInit() {}
 
   inputChange(event: any) {
     const email = event.target.value;

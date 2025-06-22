@@ -1,9 +1,20 @@
-<ion-input label="user email" type="email" placeholder="example@example.com"
-    (ionInput)="inputChange($event)"></ion-input>
-<ion-button (click)="login()" [disabled]="disabled">Login</ion-button>
+<back></back>
+
+<ion-content>
+    <div id="forms-container">
+        <ion-text>
+            <h1>Login with your E-mail</h1>
+        </ion-text>
+        <ion-input label="Your email" type="email" placeholder="example@example.com"
+            (ionInput)="inputChange($event)"></ion-input>
+
+        <ion-button (click)="login()" [disabled]="disabled">Login</ion-button>
+    </div>
+</ion-content>
 
 <ion-toast [isOpen]="errorLoginToastIsOpen" message="Failed on login. Please try again!" [duration]="1000"
-    (didDismiss)="closeToast()" color="danger"></ion-toast>
+    (didDismiss)="closeToast()" color="danger">
+</ion-toast>
 
 <ion-toast [isOpen]="successLoginToastIsOpen" message="Success! Check out your email." [duration]="10000"
     (didDismiss)="closeToast()" color="success"></ion-toast>
