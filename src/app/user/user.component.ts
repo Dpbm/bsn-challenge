@@ -8,6 +8,8 @@ import {
   IonToast,
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { Pokemon } from '@utils/pokemon';
+import { MultipleSpecificPokemonFetch } from '../services/pokemons/fetch.service';
 
 @Component({
   selector: 'app-user',
@@ -18,16 +20,18 @@ import { Router } from '@angular/router';
 export class UserComponent implements OnInit {
   email: string = '';
   failedLogoutToastIsOpen: boolean = false;
+  pokemons: Pokemon[] = [];
 
   constructor(
     private readonly supabase: SupabaseService,
+    private fetcher: MultipleSpecificPokemonFetch,
     private router: Router
   ) {}
 
-  ngOnInit() {
-    this.supabase.authChanges((_, session) => {
-      this.email = session?.user?.email || '';
-    });
+  async ngOnInit() {
+    this.email = (await this.supabase.email()) || '';
+
+    this.supabase.getFavoritePokemons().then(() => {});
   }
 
   async logout() {

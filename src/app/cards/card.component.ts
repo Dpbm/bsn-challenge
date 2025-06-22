@@ -19,8 +19,6 @@ export class CardComponent {
 
   constructor(private callback: FavoriteCallback) {
     addIcons({ heartOutline });
-
-    this.callback = callback;
   }
 
   async favorite(id: PokemonId) {

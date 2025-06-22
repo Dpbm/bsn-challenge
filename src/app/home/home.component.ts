@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MultiplePokemonFetch } from '../services/pokemons/fetch.service';
 import { PokemonCard } from '@utils/pokemon';
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
-import { FavoriteData, PokemonId } from '@customTypes/pokemon';
+import { PokemonId } from '@customTypes/pokemon';
 
 @Component({
   selector: 'home',
@@ -58,9 +58,7 @@ export class HomeComponent implements OnInit {
 
   private async getFavorites() {
     const data = await this.supabase.getFavoritePokemons();
-    this.favorites = new Set(
-      data.map((favorite: FavoriteData) => favorite.pokemon_id)
-    );
+    this.favorites = new Set(data);
   }
 
   async ngOnInit() {

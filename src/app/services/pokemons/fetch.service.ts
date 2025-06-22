@@ -7,7 +7,7 @@ import { Pokemon, PokemonCard } from '@utils/pokemon';
 import { forkJoin, map, Observable } from 'rxjs';
 
 interface Fetcher {
-  fetch(input: string | number): Observable<Pokemon | PokemonCard[]>;
+  fetch(input: string | number | number[]): Observable<Pokemon | PokemonCard[]>;
 }
 
 type FormIncomingData = {
@@ -141,6 +141,32 @@ export class MultiplePokemonFetch implements Fetcher {
      */
 
     const ids = [...Array(this.limit).keys()].map((i) => i + offset + 1);
+    const requests = ids.map((id: number) =>
+      this.http.get(`${environment.baseApiUrl}/${id}`)
+    );
+
+    const sortPokemons = (a: PokemonCard, b: PokemonCard) => a.id - b.id;
+
+    return forkJoin(requests).pipe(
+      map((results: any[]) =>
+        results
+          .map((result: any) => new PokemonCard(apiParserMinimal(result)))
+          .sort(sortPokemons)
+      )
+    );
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class MultipleSpecificPokemonFetch implements Fetcher {
+  constructor(private http: HttpClient) {}
+
+  fetch(ids: number[]): Observable<PokemonCard[]> {
+    /**
+     * @param {number[]} ids - the selected pokemons Id
+     * @returns {Observable<PokemonCard[]>} - A list of pokemons
+     */
+
     const requests = ids.map((id: number) =>
       this.http.get(`${environment.baseApiUrl}/${id}`)
     );

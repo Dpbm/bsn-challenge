@@ -7,6 +7,7 @@ import {
   PostgrestError,
   Session,
   SupabaseClient,
+  User,
 } from '@supabase/supabase-js';
 import { environment } from '@env/environment';
 import { FavoriteData, PokemonId } from '@customTypes/pokemon';
@@ -35,14 +36,24 @@ export class SupabaseService {
     return this._session;
   }
 
+  private async getUserData(): Promise<User | null> {
+    const {
+      data: { session },
+    } = await this.supabase.auth.getSession();
+
+    return session?.user || null;
+  }
+
   async userId(): Promise<string | null> {
-    return this.supabase.auth
-      .getSession()
-      .then(({ data }) => data.session?.user.id || null);
+    return this.getUserData().then((user) => user?.id || null);
+  }
+
+  async email(): Promise<string | null> {
+    return this.getUserData().then((user) => user?.email || null);
   }
 
   async isLogged(): Promise<boolean> {
-    return this.supabase.auth.getSession().then(({ data }) => !!data.session);
+    return this.getUserData().then((user) => !!user);
   }
 
   async login(email: string): Promise<AuthError | null> {
@@ -94,7 +105,7 @@ export class SupabaseService {
     });
   }
 
-  async getFavoritePokemons(): Promise<FavoriteData[]> {
+  async getFavoritePokemons(): Promise<PokemonId[]> {
     return this.userId().then(async (userId: string | null) => {
       if (!userId) return [];
 
@@ -103,7 +114,9 @@ export class SupabaseService {
         .select('pokemon_id')
         .match({ user_id: userId });
 
-      return data || [];
+      return !data
+        ? []
+        : data.map((favorite: FavoriteData) => favorite.pokemon_id) || [];
     });
   }
 }
