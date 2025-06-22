@@ -14,12 +14,15 @@ import {
   IonHeader,
   IonAvatar,
   IonNavLink,
+  IonToolbar,
+  IonButtons,
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { FavoriteEventData, PokemonId } from '@customTypes/pokemon';
 import { Favorite } from '../services/pokemons/favorite.service';
 import { LoginComponent } from '../login/login.component';
+import { UserComponent } from '../user/user.component';
 
 @Component({
   selector: 'home',
@@ -27,6 +30,7 @@ import { LoginComponent } from '../login/login.component';
   styleUrls: ['./home.component.scss'],
   imports: [
     CommonModule,
+    RouterModule,
     CardComponent,
     IonContent,
     IonInfiniteScroll,
@@ -36,8 +40,9 @@ import { LoginComponent } from '../login/login.component';
     IonButton,
     IonHeader,
     IonAvatar,
-    RouterModule,
     IonNavLink,
+    IonToolbar,
+    IonButtons,
   ],
 })
 export class HomeComponent implements OnInit {
@@ -47,6 +52,7 @@ export class HomeComponent implements OnInit {
   isLogged: boolean = !!this.supabase.session;
 
   loginComponent = LoginComponent;
+  userComponent = UserComponent;
 
   constructor(
     private fetcher: MultiplePokemonFetch,

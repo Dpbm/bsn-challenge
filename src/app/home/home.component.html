@@ -1,17 +1,28 @@
-<ion-header>
-  <span *ngIf="isLogged; then user; else login"></span>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
 
-  <ng-template #login>
-    <ion-nav-link router-direction="forward" [component]="loginComponent">
-      <ion-button>login</ion-button>
-    </ion-nav-link>
-  </ng-template>
+    <span *ngIf="isLogged; then user; else login"></span>
 
-  <ng-template #user>
-    <ion-avatar [routerLink]="['/user']">
-      <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-    </ion-avatar>
-  </ng-template>
+    <ng-template #login>
+      <ion-buttons slot="end">
+        <ion-nav-link router-direction="forward" [component]="loginComponent">
+          <ion-button class="login-button">Login</ion-button>
+        </ion-nav-link>
+      </ion-buttons>
+    </ng-template>
+
+    <ng-template #user>
+      <ion-buttons slot="end">
+        <ion-nav-link router-direction="forward" [component]="userComponent">
+          <ion-avatar>
+            <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+          </ion-avatar>
+        </ion-nav-link>
+      </ion-buttons>
+    </ng-template>
+
+  </ion-toolbar>
+
 
 </ion-header>
 
