@@ -45,9 +45,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private fetcher: MultiplePokemonFetch,
     private readonly supabase: SupabaseService
-  ) {
-    this.supabase.authChanges((_, session) => (this.isLogged = !!session));
-  }
+  ) {}
 
   private getPokemons() {
     this.fetcher.fetch(this.currentOffset).subscribe({
@@ -66,6 +64,7 @@ export class HomeComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.isLogged = await this.supabase.isLogged();
     await this.getFavorites();
     await this.getPokemons();
   }
