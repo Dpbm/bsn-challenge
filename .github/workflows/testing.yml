@@ -20,6 +20,9 @@ jobs:
 
       - name: Generate Config
         run: npm run env:conf
+        env: 
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
 
       - name: Build production version
         run: npm run build:ci

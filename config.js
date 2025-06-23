@@ -12,7 +12,7 @@ if (!fs.existsSync(targetFolder)) {
 
 const baseApiUrl = "https://pokeapi.co/api/v2/pokemon";
 const baseImageUrl =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'";
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
 const supabaseUrl = process.env["SUPABASE_URL"];
 const supabaseKey = process.env["SUPABASE_KEY"];
 
