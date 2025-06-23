@@ -36,8 +36,13 @@ type MoveIncomingData = {
   };
 };
 
+// sort pokemons by Id (ascending order)
+const sortPokemons = (a: PokemonCard, b: PokemonCard) => a.id - b.id;
+
 export function apiParserAll(data: any): PokemonData {
   /**
+   * Parse the whole data coming from api
+   *
    * @param {any} data - the unparsed incoming response data (from PokeAPI V2)
    * @returns {PokemonData} - the nicely parsed data
    */
@@ -94,6 +99,8 @@ export function apiParserAll(data: any): PokemonData {
 
 export function apiParserMinimal(data: any): PokemonMinimalData {
   /**
+   * Parse only data required for cards.
+   *
    * @param {any} data - the unparsed incoming response data (from PokeAPI V2)
    * @returns {PokemonData} - the nicely parsed data for cards
    */
@@ -146,8 +153,6 @@ export class MultiplePokemonFetch implements Fetcher {
       this.http.get(`${environment.baseApiUrl}/${id}`)
     );
 
-    const sortPokemons = (a: PokemonCard, b: PokemonCard) => a.id - b.id;
-
     return forkJoin(requests).pipe(
       map((results: any[]) =>
         results
@@ -171,8 +176,6 @@ export class MultipleSpecificPokemonFetch implements Fetcher {
     const requests = ids.map((id: number) =>
       this.http.get(`${environment.baseApiUrl}/${id}`)
     );
-
-    const sortPokemons = (a: PokemonCard, b: PokemonCard) => a.id - b.id;
 
     return forkJoin(requests).pipe(
       map((results: any[]) =>

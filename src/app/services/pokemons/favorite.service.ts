@@ -10,8 +10,10 @@ export class Favorite {
     private navigation: NavigationService
   ) {}
 
-  async call(id: PokemonId, wasFavorite: boolean): Promise<boolean> {
+  call(id: PokemonId, wasFavorite: boolean): Promise<boolean> {
     /**
+     * A helper service to handle favorites
+     *
      * @param {PokemonId} id
      * @param {boolean} wasFavorite
      * @returns {boolean} - whether the action succeeded
