@@ -1,21 +1,38 @@
-<ion-header>
-  <ion-text>{{email}}</ion-text>
-  <ion-button (click)="logout()">Logout</ion-button>
+<ion-header class="ion-no-border">
+
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>
+      Logged as {{email}}
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" class="logout-button" fill="outline">Logout</ion-button>
+    </ion-buttons>
+
+
+  </ion-toolbar>
+
 </ion-header>
 <ion-content>
-  <ion-list>
-    @for (item of pokemons; track item; let index = $index) {
-    <ion-item>
-      <card [pokemon]="item" [isFavorite]="true" (favoriteEvent)="favoriteHandler($event)"></card>
-    </ion-item>
-    }
-  </ion-list>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      @for (item of pokemons; track item; let index = $index) {
+
+      <ion-col size="5" size-md="4" size-lg="2">
+        <card [pokemon]="item" [isFavorite]="true" (favoriteEvent)="favoriteHandler($event)"></card>
+      </ion-col>
+
+      }
+    </ion-row>
+  </ion-grid>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
-
-
 
 <ion-toast [isOpen]="failedLogoutToastIsOpen" message="Failed on Logout. Please Try again later!" [duration]="1000"
   (didDismiss)="closeToast()" color="danger"></ion-toast>

@@ -3,7 +3,6 @@ import { SupabaseService } from '../services/supabase.service';
 import {
   IonHeader,
   IonContent,
-  IonText,
   IonButton,
   IonToast,
   IonList,
@@ -11,13 +10,20 @@ import {
   InfiniteScrollCustomEvent,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+  IonGrid,
+  IonCol,
+  IonRow,
 } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
 import { PokemonCard } from '@utils/pokemon';
 import { MultipleSpecificPokemonFetch } from '../services/pokemons/fetch.service';
 import { FavoriteEventData, PokemonId } from '@customTypes/pokemon';
 import { CardComponent } from '../cards/card.component';
 import { Favorite } from '../services/pokemons/favorite.service';
+import { NavigationService } from '../services/navigation.service';
 
 @Component({
   selector: 'app-user',
@@ -27,13 +33,19 @@ import { Favorite } from '../services/pokemons/favorite.service';
     IonHeader,
     IonContent,
     IonButton,
-    IonText,
     IonToast,
     IonList,
     IonItem,
     CardComponent,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    IonToolbar,
+    IonBackButton,
+    IonButtons,
+    IonTitle,
+    IonGrid,
+    IonCol,
+    IonRow,
   ],
 })
 export class UserComponent implements OnInit {
@@ -45,8 +57,8 @@ export class UserComponent implements OnInit {
   constructor(
     private readonly supabase: SupabaseService,
     private fetcher: MultipleSpecificPokemonFetch,
-    private router: Router,
-    private favoriteCallback: Favorite
+    private favoriteCallback: Favorite,
+    private navigation: NavigationService
   ) {}
 
   async ngOnInit() {
@@ -68,14 +80,14 @@ export class UserComponent implements OnInit {
   }
 
   async logout() {
-    const error = await this.supabase.signOut();
+    this.supabase.signOut().then(async (error) => {
+      if (error) {
+        this.failedLogoutToastIsOpen = true;
+        return;
+      }
 
-    if (error) {
-      this.failedLogoutToastIsOpen = true;
-      return;
-    }
-
-    this.router.navigate(['/login']);
+      await this.navigation.goToLogin();
+    });
   }
 
   async favoriteHandler(event: FavoriteEventData) {
