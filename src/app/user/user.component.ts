@@ -53,11 +53,15 @@ import { NavigationService } from '../services/navigation.service';
   ],
 })
 export class UserComponent implements OnInit {
-  private currentOffset: number = 0;
+  private currentOffset: number = 0; // offset for pagination
+
   email: string = '';
-  failedLogoutToastIsOpen: boolean = false;
+
   pokemons: PokemonCard[] = [];
-  selectedPokemon: PokemonId | null = null;
+  selectedPokemon: PokemonId | null = null; // id of the selected pokemon (navigate to details)
+
+  // toast status
+  failedLogoutToastIsOpen: boolean = false;
 
   constructor(
     private readonly supabase: SupabaseService,
@@ -66,12 +70,19 @@ export class UserComponent implements OnInit {
     private navigation: NavigationService
   ) {}
 
-  async ngOnInit() {
-    this.email = (await this.supabase.email()) || '';
-    await this.getPokemons();
+  ngOnInit() {
+    // save users email to be shown
+    this.supabase
+      .email()
+      .then((email: string | null) => (this.email = email || ''));
+    this.getPokemons();
   }
 
-  async getPokemons() {
+  getPokemons() {
+    /**
+     * Fetch a page of favorite pokemons.
+     */
+
     this.supabase
       .getFavoritePokemons(this.currentOffset)
       .then((ids: PokemonId[]) => {
@@ -84,7 +95,12 @@ export class UserComponent implements OnInit {
       });
   }
 
-  async logout() {
+  logout() {
+    /**
+     * Try to logout. If an error occurs, a toast is shown, otherwise
+     * the user is redirected to login.
+     */
+
     this.supabase.signOut().then(async (error) => {
       if (error) {
         this.failedLogoutToastIsOpen = true;
@@ -95,42 +111,74 @@ export class UserComponent implements OnInit {
     });
   }
 
-  async favoriteHandler(event: FavoriteEventData) {
-    const success = await this.favoriteCallback.call(
-      event.pokemonId,
-      event.wasFavorite
+  favoriteHandler(event: FavoriteEventData) {
+    /**
+     * Handle when user clicks on the favorite button.
+     */
+
+    this.favoriteCallback
+      .call(event.pokemonId, event.wasFavorite)
+      .then((success: boolean) => {
+        if (!success) return;
+        this.clearPokemons(event.pokemonId);
+      });
+  }
+
+  clearPokemons(pokemonId: PokemonId) {
+    /**
+     * Removes a pokemon from the current list.
+     *
+     * @params {PokemonId} pokemonId - the pokemon to be removed
+     */
+
+    this.pokemons = this.pokemons.filter(
+      (pokemon: PokemonCard) => pokemon.id != pokemonId
     );
-    if (success) {
-      this.pokemons = this.pokemons.filter(
-        (pokemon: PokemonCard) => pokemon.id != event.pokemonId
-      );
-    }
   }
 
   closeToast() {
+    /**
+     * Helper function in charge to close the toast.
+     */
     this.failedLogoutToastIsOpen = false;
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
+    /**
+     * Event for infinite scroll.
+     */
+
     this.getPokemons();
     setTimeout(() => {
+      /**
+       * Debounce the scroll event.
+       */
       event.target.complete();
-    }, 500); // debounce
+    }, 500);
   }
 
   navigationHandler(event: CardNavigationEvent) {
+    /**
+     * Helper function to handle the navigation event.
+     */
     this.selectedPokemon = event.pokemonId;
   }
 
   ionViewDidEnter() {
-    if (!this.selectedPokemon) return;
+    /**
+     * Event in charge to update the pokemon user has navigated to.
+     * In this meantime, the user could have updated the favorite status, so we
+     * need to handle that here too.
+     */
 
-    this.supabase.isFavoritePokemon(this.selectedPokemon).then((favorite) => {
+    if (!this.selectedPokemon) return;
+    const pokemonId: PokemonId = this.selectedPokemon;
+
+    this.supabase.isFavoritePokemon(pokemonId).then((favorite) => {
       if (favorite) return;
 
-      this.pokemons = this.pokemons.filter(
-        (pokemon: PokemonCard) => pokemon.id != this.selectedPokemon
-      );
+      // if it's not a favorite anymore, we remove it from our local state.
+      this.clearPokemons(pokemonId);
     });
   }
 }
