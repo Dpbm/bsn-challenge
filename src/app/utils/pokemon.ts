@@ -9,6 +9,8 @@ import {
   PokemonType,
 } from '@customTypes/pokemon';
 
+// Data functions for pokemon
+
 export class Pokemon {
   private data: PokemonData;
 
