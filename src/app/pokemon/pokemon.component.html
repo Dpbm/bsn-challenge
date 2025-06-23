@@ -21,8 +21,8 @@
         <ion-back-button></ion-back-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-button>
-          <ion-icon name="heart-outline" size="large"></ion-icon>
+        <ion-button (click)="favorite()">
+          <ion-icon name="heart-outline" size="large" [style.color]="isFavorite ? 'red' : 'gray'"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-title>

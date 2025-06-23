@@ -122,4 +122,18 @@ export class SupabaseService {
         : data.map((favorite: FavoriteData) => favorite.pokemon_id) || [];
     });
   }
+
+  async isFavoritePokemon(id: PokemonId): Promise<boolean> {
+    return this.userId().then(async (userId: string | null) => {
+      if (!userId) return false;
+
+      const { data } = await this.supabase
+        .from('favorites')
+        .select('*')
+        .match({ user_id: userId, pokemon_id: id })
+        .single();
+
+      return !!data;
+    });
+  }
 }
