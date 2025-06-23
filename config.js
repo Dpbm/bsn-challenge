@@ -1,5 +1,8 @@
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const targetFolder = path.join(".", "src", "environments");
 
@@ -7,23 +10,27 @@ if (!fs.existsSync(targetFolder)) {
   fs.mkdirSync(targetFolder);
 }
 
+const baseApiUrl = "https://pokeapi.co/api/v2/pokemon";
+const baseImageUrl =
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'";
+const supabaseUrl = process.env["SUPABASE_URL"];
+const supabaseKey = process.env["SUPABASE_KEY"];
+
 const devEnv = `export const environment = {
   production: false,
-  baseApiUrl: 'https://pokeapi.co/api/v2/pokemon',
-  baseImageUrl:
-    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon',
-  supabaseUrl: '${process.env["SUPABASE_URL"]}',
-  supabaseKey: '${process.env["SUPABASE_KEY"]}',
+  baseApiUrl: '${baseApiUrl}',
+  baseImageUrl: '${baseImageUrl}',
+  supabaseUrl: '${supabaseUrl}',
+  supabaseKey: '${supabaseKey}',
 };
 `;
 
 const prodEnv = `export const environment = {
   production: true,
-  baseApiUrl: 'https://pokeapi.co/api/v2/pokemon',
-  baseImageUrl:
-    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon',
-  supabaseUrl: '${process.env["SUPABASE_URL"]}',
-  supabaseKey: '${process.env["SUPABASE_KEY"]}',
+  baseApiUrl: '${baseApiUrl}',
+  baseImageUrl: '${baseImageUrl}',
+  supabaseUrl: '${supabaseUrl}',
+  supabaseKey: '${supabaseKey}',
 };
 `;
 
