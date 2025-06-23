@@ -1,5 +1,7 @@
 # Desafio BSN - Vaga para Dev FullStack Junior
 
+[![Test Angular Application](https://github.com/Dpbm/bsn-challenge/actions/workflows/testing.yml/badge.svg)](https://github.com/Dpbm/bsn-challenge/actions/workflows/testing.yml)
+
 Aplicação feita utilizando Ionic + Angular 19 e supabase para a criação do banco de dados e autenticação via email.
 
 O Banco de Dados Postgres disponível via Supabase, é responsável por guardar os dados de pokemons favoritados pelo usuário.
