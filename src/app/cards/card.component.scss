@@ -1,0 +1,14 @@
+.card-container{
+    display: flex;
+    flex-direction: column;
+}
+
+ion-button{
+    width: 100%;
+    --background: #f0f0f0;
+}
+
+.card-data{
+    display: flex;
+    justify-content: space-between;
+}

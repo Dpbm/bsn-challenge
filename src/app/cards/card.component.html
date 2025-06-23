@@ -1,6 +1,14 @@
-<div>
-    <ion-button [routerLink]="['/pokemon', pokemon.id]"><ion-img [src]="pokemon?.image" /> </ion-button>
-    {{pokemon.name}}
-    <ion-icon name="heart-outline" size="large" (click)="favorite()"
-        [style.color]="isFavorite ? 'red' : 'gray'"></ion-icon>
+<div class="card-container">
+
+    <ion-nav-link router-direction="forward" [component]="pokemonComponent" [componentProps]="{id: pokemon.id}">
+        <ion-button>
+            <ion-img [src]="pokemon.image" />
+        </ion-button>
+    </ion-nav-link>
+
+    <div class="card-data">
+        {{pokemon.name}}
+        <ion-icon name="heart-outline" size="large" (click)="favorite()"
+            [style.color]="isFavorite ? 'red' : 'gray'"></ion-icon>
+    </div>
 </div>

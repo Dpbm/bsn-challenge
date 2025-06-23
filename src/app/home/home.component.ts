@@ -16,6 +16,10 @@ import {
   IonNavLink,
   IonToolbar,
   IonButtons,
+  IonImg,
+  IonGrid,
+  IonRow,
+  IonCol,
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
@@ -43,6 +47,10 @@ import { UserComponent } from '../user/user.component';
     IonNavLink,
     IonToolbar,
     IonButtons,
+    IonImg,
+    IonGrid,
+    IonRow,
+    IonCol,
   ],
 })
 export class HomeComponent implements OnInit {

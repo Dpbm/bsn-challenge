@@ -15,27 +15,27 @@
       <ion-buttons slot="end">
         <ion-nav-link router-direction="forward" [component]="userComponent">
           <ion-avatar>
-            <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+            <ion-img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
           </ion-avatar>
         </ion-nav-link>
       </ion-buttons>
     </ng-template>
 
   </ion-toolbar>
-
-
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    @for (item of pokemons; track item; let index = $index) {
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      @for (item of pokemons; track item; let index = $index) {
 
-    <ion-item>
-      <card [pokemon]="item" [isFavorite]="isFavorite(item.id)" (favoriteEvent)="favoriteHandler($event)"></card>
-    </ion-item>
+      <ion-col size="5" size-md="4" size-lg="2">
+        <card [pokemon]="item" [isFavorite]="isFavorite(item.id)" (favoriteEvent)="favoriteHandler($event)"></card>
+      </ion-col>
 
-    }
-  </ion-list>
+      }
+    </ion-row>
+  </ion-grid>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
