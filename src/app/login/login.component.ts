@@ -12,6 +12,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import * as z from 'zod/v4-mini';
+import { AuthError } from '@supabase/supabase-js';
 
 const checkEmail = (email: string) =>
   z
@@ -39,14 +40,19 @@ const checkEmail = (email: string) =>
 export class LoginComponent {
   email: string = '';
   disabled: boolean = true;
+
+  // toast status
   errorLoginToastIsOpen: boolean = false;
   successLoginToastIsOpen: boolean = false;
 
   constructor(private supabase: SupabaseService) {}
 
   inputChange(event: any) {
-    const email = event.target.value;
+    /**
+     * Check email data
+     */
     try {
+      const email = event.target?.value || '';
       checkEmail(email);
       this.email = email;
       this.disabled = false;
@@ -55,20 +61,27 @@ export class LoginComponent {
     }
   }
 
-  async login() {
+  login() {
+    /**
+     * Tries to login with the provided
+     * email.
+     */
     this.disabled = true;
-    const error = await this.supabase.login(this.email);
+    this.supabase.login(this.email).then((error: AuthError | null) => {
+      if (error) {
+        this.disabled = false;
+        this.errorLoginToastIsOpen = true;
+        return;
+      }
 
-    if (error) {
-      this.disabled = false;
-      this.errorLoginToastIsOpen = true;
-      return;
-    }
-
-    this.successLoginToastIsOpen = true;
+      this.successLoginToastIsOpen = true;
+    });
   }
 
   closeToast() {
+    /**
+     * Helper function to close toasts.
+     */
     this.errorLoginToastIsOpen = false;
     this.successLoginToastIsOpen = false;
   }
