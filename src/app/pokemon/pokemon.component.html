@@ -1,52 +1,100 @@
 <span *ngIf="found; then showPokemon; else notFound"></span>
 
 <ng-template #notFound>
-  <ion-content>
+  <ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
     <h1>Pokemon not found!</h1>
   </ion-content>
 </ng-template>
 
 
 <ng-template #showPokemon>
-  <ion-content>
+  <ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button>
+          <ion-icon name="heart-outline" size="large"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>
+        {{ pokemon?.name }}
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-    <h1>{{ pokemon?.name }} <span>#{{ pokemon?.id }}</span></h1>
-    <img [src]="pokemon?.image" />
-
-    <p>height: {{pokemon?.height}} cm</p>
-    <p>weight: {{pokemon?.weight}} kg</p>
-
-
-    <h3>Types</h3>
-    <div>
-      <p *ngFor="let type of pokemon?.types">
-        {{ type }}
-      </p>
-    </div>
-
-    <h3>Moves</h3>
-    <div>
-      <p *ngFor="let move of pokemon?.moves">
-        {{ move }}
-      </p>
-    </div>
-
-    <h3>Abilities</h3>
-    <div>
-      <p *ngFor="let ability of pokemon?.abilities">
-        {{ ability }}
-      </p>
-    </div>
+  <ion-content class="ion-padding">
 
 
-    <h3>Forms</h3>
-    <div>
-      <div *ngFor="let form of pokemon?.forms">
-        <p>{{form.name}}</p>
-        <img [src]="form.image" />
-      </div>
+    <ion-img [src]="pokemon?.image" class="main-image" />
 
-    </div>
+    <ion-list>
+      <ion-item>
+        <div class="item-container">
+          <h2>Body information</h2>
+          <p class="body-info">height: {{pokemon?.height}} cm</p>
+          <p class="body-info">weight: {{pokemon?.weight}} kg</p>
+        </div>
+      </ion-item>
+
+
+      <ion-item>
+        <div class="item-container">
+          <h2>Types</h2>
+          <div class="data-list">
+            <p *ngFor="let type of pokemon?.types">
+              {{ type }}
+            </p>
+          </div>
+        </div>
+      </ion-item>
+
+      <ion-item>
+
+        <div class="item-container">
+          <h2>Moves</h2>
+          <div class="data-list">
+            <p *ngFor="let move of pokemon?.moves">
+              {{ move }}
+            </p>
+          </div>
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <div class="item-container">
+          <h2>Abilities</h2>
+          <div class="data-list">
+            <p *ngFor="let ability of pokemon?.abilities">
+              {{ ability }}
+            </p>
+          </div>
+        </div>
+      </ion-item>
+
+
+      <ion-item>
+        <div class="item-container">
+          <h2>Forms</h2>
+
+          <div class="cards-container scroll">
+            <div class="form-card" *ngFor="let form of pokemon?.forms">
+              <ion-img [src]="form.image" />
+              <p>{{form.name}}</p>
+            </div>
+          </div>
+        </div>
+      </ion-item>
+
+    </ion-list>
 
   </ion-content>
 </ng-template>

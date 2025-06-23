@@ -1,0 +1,57 @@
+.main-image::part(image){
+    image-resolution: 300dpi;    
+    height: 300px;
+}
+
+.data-list{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.body-info{
+    margin: 2px;
+}
+
+.data-list p{
+    border: 1px solid grey;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 10px;
+}
+
+.item-container{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.form-card{
+    border: 1px solid;
+    border-radius: 10px;
+
+    width: 80px;
+    min-width: 80px;
+
+
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+
+    margin-right: 10px;
+}
+
+.cards-container{
+    width: 100vw;
+    display: flex;
+    padding-right: 80px;
+}
+
+.scroll{
+    flex-wrap: nowrap;
+    overflow-x: scroll!important;
+    overflow-y: hidden;
+}

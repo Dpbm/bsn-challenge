@@ -64,11 +64,12 @@ export function apiParserAll(data: any): PokemonData {
     ? []
     : data.abilities.map(({ ability }: AbilityIncomingData) => ability.name);
 
-  const parseForm = (form: FormIncomingData) => {
+  const parseForm = (form: FormIncomingData, index: number) => {
     const formName = form.name.replace(`${name}-`, '');
-    const imageFile = ['normal', name].includes(formName)
-      ? `${id}.png`
-      : `${id}-${formName}.png`;
+    const imageFile =
+      ['normal', name].includes(formName) || index == 0
+        ? `${id}.png`
+        : `${id}-${formName}.png`;
 
     return {
       name: formName,
