@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { PokemonId } from '@customTypes/pokemon';
 import { SupabaseService } from 'src/app/services/supabase.service';
+import { NavigationService } from '../navigation.service';
 
 @Injectable({ providedIn: 'root' })
 export class Favorite {
   constructor(
     private readonly supabase: SupabaseService,
-    private router: Router
+    private navigation: NavigationService
   ) {}
 
   async call(id: PokemonId, wasFavorite: boolean): Promise<boolean> {
@@ -19,7 +19,7 @@ export class Favorite {
 
     return this.supabase.isLogged().then(async (logged: boolean) => {
       if (!logged) {
-        this.router.navigate(['/login']);
+        await this.navigation.goToLogin();
         return false;
       }
 
