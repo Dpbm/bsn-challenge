@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   AuthChangeEvent,
   AuthError,
+  AuthOtpResponse,
   AuthSession,
   createClient,
   PostgrestError,
@@ -23,6 +24,9 @@ export class SupabaseService {
   private supabase: SupabaseClient;
   _session: AuthSession | null = null;
 
+  // limits per page
+  private limit: number = DEFAULT_POKEMONS_PER_PAGE;
+
   constructor() {
     this.supabase = createClient(
       environment.supabaseUrl,
@@ -31,6 +35,9 @@ export class SupabaseService {
   }
 
   get session() {
+    /**
+     * Access session data.
+     */
     this.supabase.auth.getSession().then(({ data }) => {
       this._session = data.session;
     });
@@ -38,6 +45,11 @@ export class SupabaseService {
   }
 
   private async getUserData(): Promise<User | null> {
+    /**
+     * Get user data from session.
+     *
+     * @returns {Promise<User|null>} - the user data
+     */
     const {
       data: { session },
     } = await this.supabase.auth.getSession();
@@ -45,41 +57,78 @@ export class SupabaseService {
     return session?.user || null;
   }
 
-  async userId(): Promise<string | null> {
+  userId(): Promise<string | null> {
+    /**
+     * From user data, get the user Id.
+     *
+     * @returns {Promise<string|null>} - the user id (if not logged, it returns null)
+     */
     return this.getUserData().then((user) => user?.id || null);
   }
 
-  async email(): Promise<string | null> {
+  email(): Promise<string | null> {
+    /**
+     * From user data, get the user email.
+     *
+     * @returns {Promise<string|null>} - the user email (if not logged, it returns null)
+     */
     return this.getUserData().then((user) => user?.email || null);
   }
 
-  async isLogged(): Promise<boolean> {
+  isLogged(): Promise<boolean> {
+    /**
+     * Check if the user is logged base on its data.
+     *
+     * @returns {Promise<boolean>} - Returns true when logged
+     */
     return this.getUserData().then((user) => !!user);
   }
 
-  async login(email: string): Promise<AuthError | null> {
-    const { error } = await this.supabase.auth.signInWithOtp({ email });
-    return error;
+  login(email: string): Promise<AuthError | null> {
+    /**
+     * Tries to login.
+     *
+     * @returns {Promise<AuthError|null>} - If no error occurs, null is returned
+     */
+
+    return this.supabase.auth
+      .signInWithOtp({ email })
+      .then((res: AuthOtpResponse) => res.error);
   }
 
   authChanges(
     callback: (event: AuthChangeEvent, session: Session | null) => void
   ) {
+    /**
+     * Check for authentication events.
+     */
     return this.supabase.auth.onAuthStateChange(callback);
   }
 
   signIn(email: string) {
+    /**
+     * Signin via magic link.
+     */
     return this.supabase.auth.signInWithOtp({ email });
   }
 
-  async signOut(): Promise<AuthError | null> {
-    const { error } = await this.supabase.auth.signOut();
-    return error;
+  signOut(): Promise<AuthError | null> {
+    /**
+     * Try to log the user out.
+     *
+     * @returns {Promise<AuthError|null>} - if success, it returns null
+     */
+    return this.supabase.auth
+      .signOut()
+      .then(({ error }: { error: AuthError | null }) => error);
   }
 
-  async addFavoritePokemon(
-    pokemon_id: PokemonId
-  ): Promise<PostgrestError | null> {
+  addFavoritePokemon(pokemon_id: PokemonId): Promise<PostgrestError | null> {
+    /**
+     * Add pokemon as favorite into the database.
+     *
+     * @returns {Promise<PostgrestError|null>} - it returns if succeeded
+     */
     return this.userId().then(async (userId: string | null) => {
       if (!userId) return noUserError();
 
@@ -91,9 +140,13 @@ export class SupabaseService {
     });
   }
 
-  async removeFavoritePokemon(
-    pokemon_id: PokemonId
-  ): Promise<PostgrestError | null> {
+  removeFavoritePokemon(pokemon_id: PokemonId): Promise<PostgrestError | null> {
+    /**
+     * Removes pokemon as favorite into the database.
+     *
+     * @returns {Promise<PostgrestError|null>} - it returns if succeeded
+     */
+
     return this.userId().then(async (userId: string | null) => {
       if (!userId) return noUserError();
 
@@ -106,7 +159,13 @@ export class SupabaseService {
     });
   }
 
-  async getFavoritePokemons(offset: number): Promise<PokemonId[]> {
+  getFavoritePokemons(offset: number): Promise<PokemonId[]> {
+    /**
+     * Get a page of favorite pokemons.
+     *
+     * @returns {Promise<PokemonId[]>} - if an error occurred, an empty list is returned
+     */
+
     return this.userId().then(async (userId: string | null) => {
       if (!userId) return [];
 
@@ -114,7 +173,7 @@ export class SupabaseService {
         .from('favorites')
         .select('pokemon_id')
         .order('pokemon_id', { ascending: true })
-        .range(offset, offset + DEFAULT_POKEMONS_PER_PAGE)
+        .range(offset, offset + this.limit)
         .match({ user_id: userId });
 
       return !data
@@ -123,7 +182,12 @@ export class SupabaseService {
     });
   }
 
-  async isFavoritePokemon(id: PokemonId): Promise<boolean> {
+  isFavoritePokemon(id: PokemonId): Promise<boolean> {
+    /**
+     * Check if the current pokemon id is in favorites list.
+     *
+     * @returns {Promise<boolean>} - by default it returns false.
+     */
     return this.userId().then(async (userId: string | null) => {
       if (!userId) return false;
 
