@@ -54,11 +54,12 @@ export class PokemonComponent implements OnInit {
     addIcons({ heartOutline });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     const pokemonId = parseInt(this.params.get('id') || '0');
 
+    // fetch pokemon data and check if it's a user's favorite pokemon
     this.fetcher.fetch(pokemonId).subscribe({
-      next: async (pokemon: Pokemon) => {
+      next: (pokemon: Pokemon) => {
         this.pokemon = pokemon;
         this.supabase
           .isFavoritePokemon(pokemon.id)
@@ -70,15 +71,14 @@ export class PokemonComponent implements OnInit {
     });
   }
 
-  async favorite() {
+  favorite() {
     if (!this.pokemon) return;
 
-    const success = await this.favoriteController.call(
-      this.pokemon?.id,
-      this.isFavorite
-    );
-    if (success) {
-      this.isFavorite = !this.isFavorite;
-    }
+    this.favoriteController
+      .call(this.pokemon?.id, this.isFavorite)
+      .then((success: boolean) => {
+        if (!success) return;
+        this.isFavorite = !this.isFavorite;
+      });
   }
 }
