@@ -20,7 +20,11 @@ import {
 } from '@ionic/angular/standalone';
 import { PokemonCard } from '@utils/pokemon';
 import { MultipleSpecificPokemonFetch } from '../services/pokemons/fetch.service';
-import { FavoriteEventData, PokemonId } from '@customTypes/pokemon';
+import {
+  CardNavigationEvent,
+  FavoriteEventData,
+  PokemonId,
+} from '@customTypes/pokemon';
 import { CardComponent } from '../cards/card.component';
 import { Favorite } from '../services/pokemons/favorite.service';
 import { NavigationService } from '../services/navigation.service';
@@ -53,6 +57,7 @@ export class UserComponent implements OnInit {
   email: string = '';
   failedLogoutToastIsOpen: boolean = false;
   pokemons: PokemonCard[] = [];
+  selectedPokemon: PokemonId | null = null;
 
   constructor(
     private readonly supabase: SupabaseService,
@@ -111,5 +116,21 @@ export class UserComponent implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 500); // debounce
+  }
+
+  navigationHandler(event: CardNavigationEvent) {
+    this.selectedPokemon = event.pokemonId;
+  }
+
+  ionViewDidEnter() {
+    if (!this.selectedPokemon) return;
+
+    this.supabase.isFavoritePokemon(this.selectedPokemon).then((favorite) => {
+      if (favorite) return;
+
+      this.pokemons = this.pokemons.filter(
+        (pokemon: PokemonCard) => pokemon.id != this.selectedPokemon
+      );
+    });
   }
 }

@@ -23,7 +23,11 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
-import { FavoriteEventData, PokemonId } from '@customTypes/pokemon';
+import {
+  CardNavigationEvent,
+  FavoriteEventData,
+  PokemonId,
+} from '@customTypes/pokemon';
 import { Favorite } from '../services/pokemons/favorite.service';
 import { LoginComponent } from '../login/login.component';
 import { UserComponent } from '../user/user.component';
@@ -59,6 +63,8 @@ export class HomeComponent implements OnInit {
   favorites: Set<PokemonId> = new Set();
   isLogged: boolean = !!this.supabase.session;
 
+  selectedPokemon: PokemonId | null = null;
+
   loginComponent = LoginComponent;
   userComponent = UserComponent;
 
@@ -82,14 +88,19 @@ export class HomeComponent implements OnInit {
     this.favorites = new Set(data);
   }
 
+  private async getData() {
+    this.getFavorites().then(() => {
+      this.getPokemons();
+    });
+  }
+
   async ngOnInit() {
     this.isLogged = await this.supabase.isLogged();
-    await this.getFavorites();
-    await this.getPokemons();
+    await this.getData();
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
-    this.getPokemons();
+    this.getData();
     setTimeout(() => {
       event.target.complete();
     }, 500); // debounce
@@ -105,12 +116,29 @@ export class HomeComponent implements OnInit {
 
     if (event.wasFavorite) {
       this.favorites.delete(event.pokemonId);
-    } else {
-      this.favorites.add(event.pokemonId);
+      return;
     }
+
+    this.favorites.add(event.pokemonId);
   }
 
   isFavorite(id: PokemonId): boolean {
     return this.favorites.has(id);
+  }
+
+  navigationHandler(event: CardNavigationEvent) {
+    this.selectedPokemon = event.pokemonId;
+  }
+
+  ionViewDidEnter() {
+    if (!this.selectedPokemon) return;
+
+    this.supabase.isFavoritePokemon(this.selectedPokemon).then((favorite) => {
+      if (favorite && !this.favorites.has(this.selectedPokemon!)) {
+        this.favorites.add(this.selectedPokemon!);
+      } else if (!favorite && this.favorites.has(this.selectedPokemon!)) {
+        this.favorites.delete(this.selectedPokemon!);
+      }
+    });
   }
 }

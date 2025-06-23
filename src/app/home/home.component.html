@@ -30,7 +30,8 @@
       @for (item of pokemons; track item; let index = $index) {
 
       <ion-col size="5" size-md="4" size-lg="2">
-        <card [pokemon]="item" [isFavorite]="isFavorite(item.id)" (favoriteEvent)="favoriteHandler($event)"></card>
+        <card [pokemon]="item" [isFavorite]="isFavorite(item.id)" (favoriteEvent)="favoriteHandler($event)"
+          (navigateEvent)="navigationHandler($event)"></card>
       </ion-col>
 
       }

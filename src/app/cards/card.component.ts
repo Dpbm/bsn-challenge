@@ -8,7 +8,7 @@ import {
 } from '@ionic/angular/standalone';
 import { heartOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { FavoriteEventData } from '@customTypes/pokemon';
+import { CardNavigationEvent, FavoriteEventData } from '@customTypes/pokemon';
 import { RouterModule } from '@angular/router';
 import { PokemonComponent } from '../pokemon/pokemon.component';
 
@@ -25,6 +25,8 @@ export class CardComponent {
   pokemonComponent = PokemonComponent;
 
   @Output() favoriteEvent: EventEmitter<FavoriteEventData> = new EventEmitter();
+  @Output() navigateEvent: EventEmitter<CardNavigationEvent> =
+    new EventEmitter();
 
   constructor() {
     addIcons({ heartOutline });
@@ -34,6 +36,12 @@ export class CardComponent {
     this.favoriteEvent.emit({
       pokemonId: this.pokemon.id,
       wasFavorite: this.isFavorite,
+    });
+  }
+
+  navigate() {
+    this.navigateEvent.emit({
+      pokemonId: this.pokemon.id,
     });
   }
 }

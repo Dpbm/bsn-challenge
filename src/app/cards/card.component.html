@@ -1,6 +1,7 @@
 <div class="card-container">
 
-    <ion-nav-link router-direction="forward" [component]="pokemonComponent" [componentProps]="{id: pokemon.id}">
+    <ion-nav-link router-direction="forward" [component]="pokemonComponent" [componentProps]="{id: pokemon.id}"
+        (click)="navigate()">
         <ion-button>
             <ion-img [src]="pokemon.image" />
         </ion-button>

@@ -34,3 +34,5 @@ export type PokemonMinimalData = {
 
 export type FavoriteData = { pokemon_id: PokemonId }; // from database
 export type FavoriteEventData = { pokemonId: PokemonId; wasFavorite: boolean };
+
+export type CardNavigationEvent = { pokemonId: number };
