@@ -31,4 +31,4 @@ Para executar, é necessário:
 
 # Vídeo de demonstração
 
-[![video](https://img.youtube.com/vi/JITfT8ssL3c/0.jpg)](https://youtu.be/JITfT8ssL3c)
+[![video](https://img.youtube.com/vi/60Ea3fs6T0A/0.jpg)](https://youtu.be/60Ea3fs6T0A)
